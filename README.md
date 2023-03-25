@@ -1,4 +1,4 @@
-# Movies-Library - 1.1
+# Movies-Library - 1.2
 
 
 **Author Name**: ibraheem areeda
@@ -11,12 +11,16 @@
 
 **version 1.1**
 
-![](./WRRC%20V2.PNG)
+![](./vvvvvvvv.PNG)
 
-## Overview
+**version 1.2**
+
+![](./wrrc3.PNG)
 
 ## Getting Started
 Assuming you’ve already installed Node.js, create a directory to hold your application, and make that your working directory.
+
+
 1- $ mkdir myapp
    $ cd myapp
 
@@ -30,9 +34,16 @@ Assuming you’ve already installed Node.js, create a directory to hold your app
 
 6- $ npm install -g nodemon
 
-7- $ nodemon server.js
+7- $ npm install body-parser
 
-8- create a API key from https://developers.themoviedb.org/3/getting-started/introduction
+8-$ npm install pg
+
+9-$npm install dotenv
+
+10- $ nodemon server.js
+
+
+11- create a API key from https://developers.themoviedb.org/3/getting-started/introduction
 to use it in the requests
 
 ## Project Features
@@ -52,13 +63,21 @@ http://localhost:3006/ =>
 
 
 
-./trending => respod with array of objects for trending movies
+./trending => respond with array of objects for trending movies
 
-./search => respod with array of objects for movies with the key word entered by user
+./search => respond with array of objects for movies with the key word entered by user
 
-./LatestMoves => respod with array of objects for Latest Moves movies
+./LatestMoves => respond with array of objects for Latest Moves movies
 
-./topRated => respod with array of objects for top Rated movies
+./topRated => respond with array of objects for top Rated movies
+
+./addmovie => post method that allow the use to add a new record of movie in databace 
+
+/allMovies =>get method that allow the see all added records in databace 
+
+
+
 
 insted of ./ it will be like this
 ("http://localhost:3006/THE RAOUT YOU WANT TO REQUEST")
+

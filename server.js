@@ -7,17 +7,63 @@ const port = 3006
 const data = require("./data/data.json");
 const { request } = require('express');
 app.use(cors())
-
+const bodyParser = require('body-parser')
 const apiKey = process.env.theAPIkey
+const url=process.env.url 
+const { Client } = require('pg')
+const client = new Client(url)
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json());
 
 
 
-app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
+
+
+
+
+
+
+// connect server with DB
+client.connect().then(() => {
+
+    app.listen(port, () => {
+        console.log(`Server is listening ${port}`);
+    });
 })
 
 
 
+
+
+function allMovieshandler(req,res) {
+    let sql = `SELECT * FROM moviestable;`
+
+    client.query(sql)
+    .then( (result)=>{
+        res.send(result.rows)
+    })
+    .catch()
+
+}
+
+
+// functions
+
+function addMovieHandler (req ,res) {
+    // console.log(req.body);
+    let {title,release_date,poster_path} = req.body
+    let sql = `INSERT INTO moviesTable (title, release_date, poster_path)
+    VALUES ($1, $2, $3) RETURNING * ;`
+    let values=[title,release_date,poster_path]
+    
+    client.query(sql,values)
+    .then((result)=>{
+        console.log(result.rows);
+        res.status(201).send(result.rows)
+    })
+    .catch()
+    
+}
 
 
 const handel404 = (req, res) => {
@@ -33,32 +79,32 @@ const homeHandler = (req, res) => {
     const allPropMovie = new movie(data.title, data.genre_ids, data.original_language, data.original_title,
         data.poster_path, data.video, data.vote_average, data.overview, data.release_date, data.vote_count,
         data.id, data.adult, data.backdrop_path, data.popularity, data.media_type);
-
-    const reqPropMovie = {}
-    reqPropMovie.title = allPropMovie.title
-    reqPropMovie.poster_path = allPropMovie.poster_path
-    reqPropMovie.overview = allPropMovie.overview
-
-
-    res.json(reqPropMovie)
-}
-
-
-const urlForTrending = `https://api.themoviedb.org/3/trending/all/week?api_key=${apiKey}&language=en-US`
-function trendingHandler(req, res) {
-    const request = axios.get(urlForTrending)
-    request
-
+        
+        const reqPropMovie = {}
+        reqPropMovie.title = allPropMovie.title
+        reqPropMovie.poster_path = allPropMovie.poster_path
+        reqPropMovie.overview = allPropMovie.overview
+        
+        
+        res.json(reqPropMovie)
+    }
+    
+    
+    const urlForTrending = `https://api.themoviedb.org/3/trending/all/week?api_key=${apiKey}&language=en-US`
+    function trendingHandler(req, res) {
+        const request = axios.get(urlForTrending)
+        request
+        
         .then(result => {
-
-
-
+            
+            
+            
             let redata = result.data.results.map(
-
+                
                 function constrct(data) { return new Short(data.id, data.title, data.release_date, data.poster_path, data.overview) }
             )
-
-
+            
+            
             res.json(redata)
         })
 
@@ -71,43 +117,43 @@ const urlForSearch = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey
 const searchHandler = (req, res) => {
     const request = axios.get(urlForSearch)
     request
-        .then(result => {
-
-            let searchResult = result.data.results.map(
+    .then(result => {
+        
+        let searchResult = result.data.results.map(
 
                 function shconstrct(data) { return new Short(data.id, data.title, data.release_date, data.poster_path, data.overview) }
-            )
-
-
-            res.json(searchResult)
-
-
-
-        })
-
-
-        .catch(error => { console.error('error') })
-}
-
-
-const urlForLatestMoves = `https://api.themoviedb.org/3/movie/latest?api_key=${apiKey}&language=en-US`
-
-function LatestMovesHandler (req, res) {
-
-    const request = axios.get(urlForLatestMoves)
-    request
-        .then(result => {
-
-            console.log(result.data);
+                )
+                
+                
+                res.json(searchResult)
+                
+                
+                
+            })
             
-            let LatestMoves = 
-
+            
+            .catch(error => { console.error('error') })
+        }
+        
+        
+        const urlForLatestMoves = `https://api.themoviedb.org/3/movie/latest?api_key=${apiKey}&language=en-US`
+        
+        function LatestMovesHandler (req, res) {
+            
+            const request = axios.get(urlForLatestMoves)
+            request
+            .then(result => {
+                
+                console.log(result.data);
+            
+                let LatestMoves = 
+                
                 new Short(result.data.id,result.data.title, result.data.release_date, result.data.poster_path, result.data.overview ) 
-            
-
-            res.json(LatestMoves)
-
-        } )
+                
+                
+                res.json(LatestMoves)
+                
+            } )
         .catch(error => { console.error('error') })
 
 
@@ -117,25 +163,25 @@ const urlForTopRated = `https://api.themoviedb.org/3/movie/top_rated?api_key=${a
 function topRatedHandler (req,res) {
     const request = axios.get(urlForTopRated)
     request
-.then( result => {
-
-    // console.log(result.data.results);
-    let ForTopRatedData = result.data.results.map( function TopRatedDataFunction(data) {
-        return  new Short(data.id, data.title, data.release_date, data.poster_path, data.overview, data.vote_average)
-    }
-    
+    .then( result => {
+        
+        // console.log(result.data.results);
+        let ForTopRatedData = result.data.results.map( function TopRatedDataFunction(data) {
+            return  new Short(data.id, data.title, data.release_date, data.poster_path, data.overview, data.vote_average)
+        }
+        
     )
     
     
     
-
+    
     
     
     res.json(ForTopRatedData)
     
     
 }
-    )
+)
     
 .catch(error=>console.log("error"))
 
@@ -145,10 +191,11 @@ function topRatedHandler (req,res) {
 
 
 
+// routes
 
+app.get('/allMovies' , allMovieshandler)
 
-
-
+app.post('/addmovie' , addMovieHandler)
 
 app.get('/favorite', fhandler)
 
@@ -170,7 +217,7 @@ app.get("*", handel404)
 
 
 
-
+//constrctor function
 
 function movie(title, genre_ids, original_language, original_title,
     poster_path, video, vote_average, overview, release_date, vote_count,
