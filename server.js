@@ -42,7 +42,7 @@ function allMovieshandler(req,res) {
     .then( (result)=>{
         res.send(result.rows)
     })
-    .catch()
+    .catch(error => { console.error('error') })
 
 }
 
@@ -51,17 +51,17 @@ function allMovieshandler(req,res) {
 
 function addMovieHandler (req ,res) {
     // console.log(req.body);
-    let {title,release_date,poster_path} = req.body
-    let sql = `INSERT INTO moviesTable (title, release_date, poster_path)
-    VALUES ($1, $2, $3) RETURNING * ;`
-    let values=[title,release_date,poster_path]
+    let {title,release_date,poster_path,comment} = req.body
+    let sql = `INSERT INTO moviesTable (title, release_date, poster_path,comment)
+    VALUES ($1, $2, $3 ,$4) RETURNING * ;`
+    let values=[title,release_date,poster_path,comment]
     
     client.query(sql,values)
     .then((result)=>{
         console.log(result.rows);
         res.status(201).send(result.rows)
     })
-    .catch()
+    .catch(error => { console.error('error') })
     
 }
 
