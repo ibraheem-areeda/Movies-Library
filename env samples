@@ -1,0 +1,2 @@
+theAPIkey=you api key that you cab getfrom https://developers.themoviedb.org/3/getting-started/introduction
+url=postgres://username:password@localhost:5432/databace-name
