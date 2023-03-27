@@ -54,7 +54,7 @@ function addMovieHandler (req ,res) {
     let {id,title,release_date,poster_path,comment} = req.body
     let sql = `INSERT INTO moviesTable (id,title, release_date, poster_path,comment)
     VALUES ($1, $2, $3 ,$4, $5) RETURNING * ;`
-    let values=[id,title,release_date,poster_path,comment]
+    let values=[id,title,release_date,poster_path,comment] //id added
     
     client.query(sql,values)
     .then((result)=>{
