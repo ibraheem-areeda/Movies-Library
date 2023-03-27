@@ -51,10 +51,10 @@ function allMovieshandler(req,res) {
 
 function addMovieHandler (req ,res) {
     // console.log(req.body);
-    let {title,release_date,poster_path,comment} = req.body
-    let sql = `INSERT INTO moviesTable (title, release_date, poster_path,comment)
-    VALUES ($1, $2, $3 ,$4) RETURNING * ;`
-    let values=[title,release_date,poster_path,comment]
+    let {id,title,release_date,poster_path,comment} = req.body
+    let sql = `INSERT INTO moviesTable (id,title, release_date, poster_path,comment)
+    VALUES ($1, $2, $3 ,$4, $5) RETURNING * ;`
+    let values=[id,title,release_date,poster_path,comment]
     
     client.query(sql,values)
     .then((result)=>{
