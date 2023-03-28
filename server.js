@@ -66,6 +66,62 @@ function addMovieHandler (req ,res) {
 }
 
 
+function updateHandler(req,res) {
+    let movieId = req.params.movieId
+    
+    let {id,title,release_date,poster_path,comment} = req.body
+    let sql = `UPDATE moviestable SET id=$1, title=$2, release_date=$3, poster_path=$4,
+     comment=$5 WHERE id=$6 RETURNING * ;`
+    let values = [id,title,release_date,poster_path,comment,movieId] 
+    client.query(sql,values)
+    .then((result)=>{
+        console.log(result);
+        res.status(202).send(result.rows)
+    })
+    .catch(error => { console.error('error') })
+
+}
+
+function deleteHandler(req,res) {
+    let movieId = req.params.movieId
+    
+    
+        
+    let sql = `DELETE FROM moviestable WHERE id=$1 ;`
+    let values = [movieId] 
+    client.query(sql,values)
+    .then((result)=>{
+        console.log(result);
+        res.status(204).send("deleted")
+    })
+    .catch(error => { console.error('error') })
+
+}
+
+function oneMovieHandler(req,res) {
+    console.log("ok");
+    let movieId = req.params.movieId
+    let sql = `SELECT * FROM moviestable WHERE id = $1;`
+    let values = [movieId] 
+    client.query(sql,values)
+    .then((result)=>{
+        console.log(result);
+        res.status(200).send(result.rows)
+    })
+    .catch(error => { console.error('error') })
+
+}
+
+
+
+
+
+
+
+
+
+
+
 const handel404 = (req, res) => {
     res.status(404).send('Not Found')
 }
@@ -209,6 +265,12 @@ app.get("/search", searchHandler)
 app.get("/LatestMoves", LatestMovesHandler)
 
 app.get("/topRated", topRatedHandler)
+
+app.put("/UPDATE/:movieId" , updateHandler) //1
+
+app.delete("/DELETE/:movieId" , deleteHandler) //2
+
+app.get( "/getMovie/:movieId" , oneMovieHandler) // 3
 
 app.get("*", handel404)
 
