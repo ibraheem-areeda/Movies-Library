@@ -9,7 +9,7 @@ const { request } = require('express');
 app.use(cors())
 const bodyParser = require('body-parser')
 const apiKey = process.env.theAPIkey
-const url=process.env.url 
+const url=process.env.DATABASE_URL 
 const { Client } = require('pg')
 const client = new Client(url)
 app.use(bodyParser.urlencoded({ extended: false }))
