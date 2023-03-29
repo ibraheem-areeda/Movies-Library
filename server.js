@@ -51,10 +51,10 @@ function allMovieshandler(req,res) {
 
 function addMovieHandler (req ,res) {
     // console.log(req.body);
-    let {id,title,release_date,poster_path,comment} = req.body
-    let sql = `INSERT INTO moviesTable (id,title, release_date, poster_path,comment)
-    VALUES ($1, $2, $3 ,$4, $5) RETURNING * ;`
-    let values=[id,title,release_date,poster_path,comment]
+    let {title,release_date,poster_path,comment} = req.body
+    let sql = `INSERT INTO moviesTable (title, release_date, poster_path,comment)
+    VALUES ( $1, $2 ,$3, $4) RETURNING * ;`
+    let values=[title,release_date,poster_path,comment] //id added
     
     client.query(sql,values)
     .then((result)=>{
@@ -64,6 +64,62 @@ function addMovieHandler (req ,res) {
     .catch(error => { console.error('error') })
     
 }
+
+
+function updateHandler(req,res) {
+    let movieId = req.params.movieId
+    
+    let {title,release_date,poster_path,comment} = req.body
+    let sql = `UPDATE moviestable SET  title=$1, release_date=$2, poster_path=$3,
+     comment=$4 WHERE id=$5 RETURNING * ;`
+    let values = [title,release_date,poster_path,comment,movieId] 
+    client.query(sql,values)
+    .then((result)=>{
+        console.log(result);
+        res.status(202).send(result.rows)
+    })
+    .catch(error => { console.error('error') })
+
+}
+
+function deleteHandler(req,res) {
+    let movieId = req.params.movieId
+    
+    
+        
+    let sql = `DELETE FROM moviestable WHERE id=$1 ;`
+    let values = [movieId] 
+    client.query(sql,values)
+    .then((result)=>{
+        console.log(result);
+        res.status(204).send("deleted")
+    })
+    .catch(error => { console.error('error') })
+
+}
+
+function oneMovieHandler(req,res) {
+    console.log("ok");
+    let movieId = req.params.movieId
+    let sql = `SELECT * FROM moviestable WHERE id = $1;`
+    let values = [movieId] 
+    client.query(sql,values)
+    .then((result)=>{
+        console.log(result);
+        res.status(200).send(result.rows)
+    })
+    .catch(error => { console.error('error') })
+
+}
+
+
+
+
+
+
+
+
+
 
 
 const handel404 = (req, res) => {
@@ -209,6 +265,12 @@ app.get("/search", searchHandler)
 app.get("/LatestMoves", LatestMovesHandler)
 
 app.get("/topRated", topRatedHandler)
+
+app.put("/UPDATE/:movieId" , updateHandler) //1
+
+app.delete("/DELETE/:movieId" , deleteHandler) //2
+
+app.get( "/getMovie/:movieId" , oneMovieHandler) // 3
 
 app.get("*", handel404)
 
