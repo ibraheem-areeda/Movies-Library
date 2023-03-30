@@ -168,9 +168,10 @@ const homeHandler = (req, res) => {
 }
 
 
-let movieName = "batman"
-const urlForSearch = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&language=en-US&query=${movieName}`
 const searchHandler = (req, res) => {
+    let movieName = req.query.movieName
+    // console.log(req);
+    const urlForSearch = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&language=en-US&query=${movieName}`
     const request = axios.get(urlForSearch)
     request
     .then(result => {
