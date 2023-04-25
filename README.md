@@ -84,3 +84,5 @@ http://localhost:3006/ =>
 insted of ./ it will be like this
 ("http://localhost:3006/THE RAOUT YOU WANT TO REQUEST")
 
+OK from mobile 
+
